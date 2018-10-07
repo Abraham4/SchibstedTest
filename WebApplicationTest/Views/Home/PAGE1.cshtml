@@ -1,0 +1,11 @@
+﻿
+@{
+    ViewBag.Title = "PAGE1";
+}
+
+<h2>PAGE1</h2>
+@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    @Html.Raw("Hello " + User.Identity.GetUserName() + "!")
+}
