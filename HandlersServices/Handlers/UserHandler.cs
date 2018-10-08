@@ -117,7 +117,7 @@ namespace HandlersServices
                     }
                     else
                     {
-                        user = null;
+                        userToReturn = null;
                     }
 
 
@@ -188,9 +188,12 @@ namespace HandlersServices
                     {
                         context.User.Remove(bdUser);
                         await context.SaveChangesAsync();
+                        return true;
                     }
-
-                    return true;
+                    else
+                    {
+                        return false;
+                    }
                 }
 
             }

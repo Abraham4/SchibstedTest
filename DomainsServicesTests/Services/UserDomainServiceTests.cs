@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DomainsServices.Entities;
+using System.IO;
 
 namespace DomainsServices.Tests
 {
@@ -14,17 +15,23 @@ namespace DomainsServices.Tests
     {
         private UserDomainService _userDomainService = new UserDomainService();
 
+        public UserDomainServiceTests()
+        {
+            string path = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName;
+            AppDomain.CurrentDomain.SetData("DataDirectory", path);
+        }
+
         [TestMethod()]
-        public async void GetAllUserTest()
+        public void GetAllUserTest()
         {
 
-            var users = await _userDomainService.GetAllUser();
+            var users = _userDomainService.GetAllUser().Result;
 
             Assert.IsNotNull(users);
         }
 
         [TestMethod()]
-        public async void GetUserByIdTest()
+        public void GetUserByIdTest()
         {
             //PAGE1 user
             var userIdPage1 = new Guid("4f958265-0de4-4781-bda9-d69b3b48eaee");
@@ -41,25 +48,25 @@ namespace DomainsServices.Tests
             //Random Guid
             var randomGuid = Guid.NewGuid();
 
-            var user = await _userDomainService.GetUserById(userIdPage1);
+            var user = _userDomainService.GetUserById(userIdPage1).Result;
 
             Assert.IsNotNull(user);
         }
 
         [TestMethod()]
-        public async void GetUserByNameAndPasswordTest()
+        public void GetUserByNameAndPasswordTest()
         {
             //user: PAGE2 password: PAGE2
             //user: PAGE1 password: PAGE1
             //user: PAGE3 password: PAGE3
             //user: ADMIN password: 123
-            var user = await _userDomainService.GetUserByNameAndPassword("PAGE1", "PAGE1");
+            var user = _userDomainService.GetUserByNameAndPassword("PAGE1", "PAGE1").Result;
 
-            Assert.Fail();
+            Assert.IsNotNull(user);
         }
 
         [TestMethod()]
-        public async void GetUserRolesByIdTest()
+        public void GetUserRolesByIdTest()
         {
             //PAGE1 user
             var userIdPage1 = new Guid("4f958265-0de4-4781-bda9-d69b3b48eaee");
@@ -73,13 +80,13 @@ namespace DomainsServices.Tests
             //Admin user
             var userIdAdmin = new Guid("1f4b5a0e-618f-44f2-af49-9d1cb9abec9f");
 
-            var user = await _userDomainService.GetUserRolesById(userIdAdmin);
+            var user = _userDomainService.GetUserRolesById(userIdAdmin).Result;
 
-            Assert.Fail();
+            Assert.IsNotNull(user);
         }
 
         [TestMethod()]
-        public async void AddNewUserTest()
+        public void AddNewUserTest()
         {
             var user = new UserDto()
             {
@@ -88,12 +95,12 @@ namespace DomainsServices.Tests
                 Password = "TestUserPassword",
                 Roles = "PAGE_1;PAGE_2;PAGE_3;Admin"
             };
-            var userAdded = await _userDomainService.AddNewUser(user);
+            var userAdded = _userDomainService.AddNewUser(user).Result;
             Assert.IsNotNull(userAdded);
         }
 
         [TestMethod()]
-        public async void UpdateUserTest()
+        public void UpdateUserTest()
         {
             var user = new UserDto()
             {
@@ -102,18 +109,18 @@ namespace DomainsServices.Tests
                 Password = "PAGE2",
                 Roles = "PAGE_2"
             };
-            var userUpdated = await _userDomainService.UpdateUser(user);
+            var userUpdated = _userDomainService.UpdateUser(user).Result;
 
             Assert.IsNotNull(userUpdated);
         }
 
         [TestMethod()]
-        public async void DeleteUserTest()
+        public void DeleteUserTest()
         {
             //PAGE2 user
             var userIdPage2 = new Guid("e99516ff-e3c0-46c3-8cc1-1fcc108e4056");
 
-            var deleted = await _userDomainService.DeleteUser(userIdPage2);
+            var deleted = _userDomainService.DeleteUser(userIdPage2).Result;
 
             Assert.IsTrue(deleted);
         }
